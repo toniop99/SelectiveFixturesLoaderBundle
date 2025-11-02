@@ -1,24 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Andez\SelectiveFixturesLoaderBundle;
 
-/**
- * @internal
- */
+/** @internal */
 final readonly class ArrayBaseFixturesLoader implements BaseFixturesLoaderInterface
 {
-    /**
-     * @param class-string[] $baseFixtures
-     */
+    /** @param class-string[] $baseFixtures */
     public function __construct(
-        private array $baseFixtures
-    )
-    {
+        private array $baseFixtures,
+    ) {
     }
 
-    /**
-     * @return class-string[]
-     */
+    /** @return class-string[] */
     public function getBaseFixtures(): array
     {
         return $this->baseFixtures;

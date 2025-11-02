@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Andez\SelectiveFixturesLoaderBundle\Command;
 
 use Andez\SelectiveFixturesLoaderBundle\FixturesDependencies;
@@ -9,21 +11,23 @@ use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\AbstractLogger;
+use Stringable;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Stringable;
+
+use function array_map;
+use function assert;
+use function sprintf;
 
 class SelectiveFixtureLoaderCommand extends Command
 {
-
     public function __construct(
-        private ManagerRegistry      $doctrine,
+        private ManagerRegistry $doctrine,
         private FixturesDependencies $getFixtureDependencies,
-    )
-    {
+    ) {
         parent::__construct();
     }
 
@@ -36,8 +40,7 @@ class SelectiveFixtureLoaderCommand extends Command
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Load the fixtures as a dry run.')
             ->addOption('purge-exclusions', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'List of database tables to ignore while purging')
             ->addOption('em', null, InputOption::VALUE_REQUIRED, 'The entity manager to use for this command.')
-            ->addOption('fixtures', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'Fixture or Fixtures class names to load (FQCN).')
-        ;
+            ->addOption('fixtures', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'Fixture or Fixtures class names to load (FQCN).');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -60,9 +63,9 @@ class SelectiveFixtureLoaderCommand extends Command
 
             $selectedFixtures = $ui->choice(
                 'Select fixtures to load (multiple selections allowed, separate by comma)',
-                array_map(fn($fixture) => get_class($fixture), $fixtures),
+                array_map(static fn ($fixture) => $fixture::class, $fixtures),
                 null,
-                true
+                true,
             );
         }
 
@@ -101,5 +104,4 @@ class SelectiveFixtureLoaderCommand extends Command
 
         return Command::SUCCESS;
     }
-
 }

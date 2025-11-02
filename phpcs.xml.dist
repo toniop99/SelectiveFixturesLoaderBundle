@@ -14,4 +14,8 @@
     <file>tests</file>
 
     <rule ref="Doctrine" />
+
+    <rule ref="SlevomatCodingStandard.Classes.SuperfluousInterfaceNaming.SuperfluousSuffix">
+            <exclude-pattern>src/BaseFixturesLoaderInterface.php</exclude-pattern>
+    </rule>
 </ruleset>

@@ -1,32 +1,34 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Andez\SelectiveFixturesLoaderBundle;
 
 use Doctrine\Bundle\FixturesBundle\Loader\SymfonyFixturesLoader;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
+use Doctrine\Common\DataFixtures\FixtureInterface;
 
 final readonly class FixturesDependencies
 {
+    /** @param string[] $purgeExclusionTables */
     public function __construct(
-        private ?BaseFixturesLoaderInterface $baseFixturesLoader = null,
+        private BaseFixturesLoaderInterface|null $baseFixturesLoader = null,
         private SymfonyFixturesLoader $fixturesLoader,
         private array $purgeExclusionTables = [],
-    )
-    {
+    ) {
     }
 
-    /**
-     * @return class-string[]
-     */
+    /** @return class-string[] */
     private function baseFixtures(): array
     {
-        if (null === $this->baseFixturesLoader) {
+        if ($this->baseFixturesLoader === null) {
             return [];
         }
 
         return $this->baseFixturesLoader->getBaseFixtures();
     }
 
+    /** @return array<class-string, true> */
     private function collectDependencies(string ...$fixtureClass): array
     {
         $dependencies = [];
@@ -45,15 +47,21 @@ final readonly class FixturesDependencies
         return $dependencies;
     }
 
+    /** @return FixtureInterface[] */
     public function allFixtures(): array
     {
         return $this->fixturesLoader->getFixtures();
     }
 
+    /**
+     * @param class-string<FixtureInterface>[] $fixtureClasses
+     *
+     * @return FixtureInterface[]
+     */
     public function fixturesToLoad(array $fixtureClasses): array
     {
         $requiredFixtures = [];
-        $baseFixtures = $this->baseFixtures();
+        $baseFixtures     = $this->baseFixtures();
 
         foreach ($baseFixtures as $baseFixture) {
             $requiredFixtures += $this->collectDependencies($baseFixture);
@@ -69,14 +77,17 @@ final readonly class FixturesDependencies
         foreach ($allFixtures as $order => $fixture) {
             $fixtureClass = $fixture::class;
 
-            if (isset($requiredFixtures[$fixtureClass])) {
-                $filteredFixtures[$order] = $fixture;
+            if (! isset($requiredFixtures[$fixtureClass])) {
+                continue;
             }
+
+            $filteredFixtures[$order] = $fixture;
         }
 
         return $filteredFixtures;
     }
 
+    /** @return string[] */
     public function purgeExclusionTables(): array
     {
         return $this->purgeExclusionTables;
