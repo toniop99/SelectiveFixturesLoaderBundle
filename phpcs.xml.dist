@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<ruleset>
+    <arg name="basepath" value="."/>
+    <arg name="extensions" value="php"/>
+    <arg name="parallel" value="45"/>
+    <arg name="cache" value=".phpcs-cache"/>
+    <arg name="colors"/>
+
+    <config name="php_version" value="80100"/>
+
+    <arg value="nps"/>
+
+    <file>src</file>
+    <file>tests</file>
+
+    <rule ref="Doctrine" />
+</ruleset>
