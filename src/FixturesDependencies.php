@@ -28,7 +28,11 @@ final readonly class FixturesDependencies
         return $this->baseFixturesLoader->getBaseFixtures();
     }
 
-    /** @return array<class-string, true> */
+    /**
+     * @param class-string ...$fixtureClass
+     *
+     * @return array<class-string, true>
+     */
     private function collectDependencies(string ...$fixtureClass): array
     {
         $dependencies = [];
