@@ -25,25 +25,32 @@ final class SelectiveFixturesLoaderBundle extends AbstractBundle
         $rootNode
             ->children()
                 ->scalarNode('base_fixtures_loader_service_id')
-                ->defaultNull()
-                ->validate()
-                    ->ifTrue(fn($value) => null !== $value && !is_a($value, BaseFixturesLoaderInterface::class, true))
-                    ->thenInvalid('The class "%s" configured for "selective_fixtures_loader.base_fixtures_loader_service_id" must implement "' . BaseFixturesLoaderInterface::class . '".')
+                    ->defaultNull()
+                    ->info('The service ID (FQCN) of the class implementing BaseFixturesLoaderInterface to provide base fixtures.')
+                    ->example('App\Services\BaseFixtureUserLoader')
+                    ->validate()
+                        ->ifTrue(fn($value) => null !== $value && !is_a($value, BaseFixturesLoaderInterface::class, true))
+                        ->thenInvalid('The class "%s" configured for "selective_fixtures_loader.base_fixtures_loader_service_id" must implement "' . BaseFixturesLoaderInterface::class . '".')
+                    ->end()
                 ->end()
-                ->info('The service ID (FQCN) of the class implementing BaseFixturesLoaderInterface to provide base fixtures.')
-                ->example('App\Services\BaseFixtureUserLoader')
-            ->end()
-            ->arrayNode('base_fixtures')
-                ->info('A list of fixture class names to be used as base fixtures.')
-                ->example(['App\DataFixtures\UserFixtures', 'App\DataFixtures\RoleFixtures'])
-                ->prototype('scalar')
-                ->validate()
-                    ->ifTrue(fn($value) => !class_exists($value))
-                    ->thenInvalid('The class "%s" configured in "selective_fixtures_loader.base_fixtures" does not exist.')
-                ->end()
-            ->end()
-        ->end()
 
+                ->arrayNode('base_fixtures')
+                    ->info('A list of fixture class names to be used as base fixtures.')
+                    ->example(['App\DataFixtures\UserFixtures', 'App\DataFixtures\RoleFixtures'])
+                    ->prototype('scalar')
+                        ->validate()
+                            ->ifTrue(fn($value) => !class_exists($value))
+                            ->thenInvalid('The class "%s" configured in "selective_fixtures_loader.base_fixtures" does not exist.')
+                        ->end()
+                    ->end()
+                ->end()
+
+                ->arrayNode('purge_exclusion_tables')
+                    ->info('A list of database tables to exclude from purging when loading fixtures.')
+                    ->example(['users', 'roles'])
+                    ->prototype('scalar')->end()
+                    ->defaultValue([])
+                ->end()
         ->end();
     }
 
@@ -62,6 +69,11 @@ final class SelectiveFixturesLoaderBundle extends AbstractBundle
 
             $builder->setAlias(BaseFixturesLoaderInterface::class, ArrayBaseFixturesLoader::class);
         }
+
+        $builder->setParameter(
+            'andez_selective_fixtures_loader.purge_exclusion_tables',
+            $config['purge_exclusion_tables']
+        );
     }
 
 }

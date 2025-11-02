@@ -1,0 +1,4 @@
+andez_selective_fixtures_loader:
+    base_fixtures_loader_service_id: ~
+    base_fixtures: []
+    purge_exclusion_tables: []

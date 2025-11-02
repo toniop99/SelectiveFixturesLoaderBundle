@@ -35,9 +35,8 @@ class SelectiveFixtureLoaderCommand extends Command
             ->addOption('append', null, InputOption::VALUE_NONE, 'Append the data fixtures instead of deleting all data from the database first.')
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Load the fixtures as a dry run.')
             ->addOption('purge-exclusions', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'List of database tables to ignore while purging')
-            ->addOption('purge-with-truncate', null, InputOption::VALUE_NONE, 'Purge data by using a database-level TRUNCATE statement')
             ->addOption('em', null, InputOption::VALUE_REQUIRED, 'The entity manager to use for this command.')
-            ->addOption('fixture', null, InputOption::VALUE_REQUIRED, 'Fixture class name to load (FQCN).')
+            ->addOption('fixtures', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'Fixture or Fixtures class names to load (FQCN).')
         ;
     }
 
@@ -48,34 +47,35 @@ class SelectiveFixtureLoaderCommand extends Command
 
         assert($em instanceof EntityManagerInterface);
 
-//        if (! $input->getOption('dry-run') && ! $input->getOption('append')) {
-//            if (! $ui->confirm(sprintf('Careful, database "%s" will be purged. Do you want to continue?', $em->getConnection()->getDatabase()), ! $input->isInteractive())) {
-//                return Command::SUCCESS;
-//            }
-//        }
+        if (! $input->getOption('dry-run') && ! $input->getOption('append')) {
+            if (! $ui->confirm(sprintf('Careful, database "%s" will be purged. Do you want to continue?', $em->getConnection()->getDatabase()), ! $input->isInteractive())) {
+                return Command::SUCCESS;
+            }
+        }
 
+        $selectedFixtures = $input->getOption('fixtures');
 
-        $selectedFixture = $input->getOption('fixture');
-        if (empty($selectedFixture)) {
+        if (empty($selectedFixtures)) {
             $fixtures = $this->getFixtureDependencies->allFixtures();
 
-            $selectedFixture = $ui->choice(
+            $selectedFixtures = $ui->choice(
                 'Select fixtures to load (multiple selections allowed, separate by comma)',
                 array_map(fn($fixture) => get_class($fixture), $fixtures),
                 null,
-                false
+                true
             );
         }
 
-        $fixturesToLoad = $this->getFixtureDependencies->fixturesToLoad([$selectedFixture]);
+        $fixturesToLoad = $this->getFixtureDependencies->fixturesToLoad($selectedFixtures);
 
         $factory = new ORMPurgerFactory();
+
+        $purgeExclusions = $input->getOption('purge-exclusions') ? $input->getOption('purge-exclusions') : $this->getFixtureDependencies->purgeExclusionTables();
 
         $purger = $factory->createForEntityManager(
             $input->getOption('em'),
             $em,
-            $input->getOption('purge-exclusions'),
-            (bool) $input->getOption('purge-with-truncate')
+            $purgeExclusions,
         );
 
         if ($input->getOption('dry-run')) {

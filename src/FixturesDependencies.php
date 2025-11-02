@@ -8,9 +8,9 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 final readonly class FixturesDependencies
 {
     public function __construct(
-        private FixtureCollector $collector,
         private ?BaseFixturesLoaderInterface $baseFixturesLoader = null,
         private SymfonyFixturesLoader $fixturesLoader,
+        private array $purgeExclusionTables = [],
     )
     {
     }
@@ -33,7 +33,7 @@ final readonly class FixturesDependencies
 
         foreach ($fixtureClass as $class) {
             $dependencies[$class] = true;
-            $fixture              = $this->collector->findFixtureByClassName($class);
+            $fixture              = $this->fixturesLoader->getFixture($class);
 
             if (! $fixture instanceof DependentFixtureInterface) {
                 continue;
@@ -75,5 +75,10 @@ final readonly class FixturesDependencies
         }
 
         return $filteredFixtures;
+    }
+
+    public function purgeExclusionTables(): array
+    {
+        return $this->purgeExclusionTables;
     }
 }
