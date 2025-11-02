@@ -1,0 +1,23 @@
+{
+    "name": "andez/selective-fixtures-loader-bundle",
+    "description": "Symfony bundle for selective loading a fixture  with his dependencies",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Andez\\SelectiveFixturesLoaderBundle\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Andez\\SelectiveFixturesLoaderBundle\\Tests\\": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Antonio Hernandez",
+            "email": "andezdev@gmail.com"
+        }
+    ],
+    "require": {}
+}
