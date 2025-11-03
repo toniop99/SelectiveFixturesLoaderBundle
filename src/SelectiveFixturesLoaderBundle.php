@@ -58,7 +58,7 @@ final class SelectiveFixturesLoaderBundle extends AbstractBundle
         ->end();
     }
 
-    /** @inheritDoc */
+    /** @param array<string, mixed> $config El array de configuración del bundle, ya mergeado. */
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
     {
         $container->import('../config/services.php');

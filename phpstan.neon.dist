@@ -4,3 +4,8 @@ parameters:
     paths:
         - src
         - tests
+    ignoreErrors:
+        -
+            message: '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::children().#'
+            path: src/SelectiveFixturesLoaderBundle.php
+            count: 1
