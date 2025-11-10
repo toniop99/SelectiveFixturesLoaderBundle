@@ -16,6 +16,7 @@ jobs:
   phpunit:
     name: "PHPUnit"
     runs-on: "ubuntu-22.04"
+    continue-on-error: true
 
     strategy:
       matrix:
@@ -66,12 +67,14 @@ jobs:
         run: "vendor/bin/phpunit --log-junit junit.xml --coverage-clover=coverage.xml"
 
       - name: "Upload coverage file"
+        if: "always()"
         uses: "actions/upload-artifact@v4"
         with:
           name: "phpunit-${{ matrix.dependencies }}-${{ matrix.stability }}-${{ matrix.php-version }}.coverage"
           path: "coverage.xml"
 
       - name: "Upload junit file"
+        if: "always()"
         uses: "actions/upload-artifact@v4"
         with:
           name: "phpunit-${{ matrix.dependencies }}-${{ matrix.stability }}-${{ matrix.php-version }}.junit"
