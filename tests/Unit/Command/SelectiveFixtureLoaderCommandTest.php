@@ -24,11 +24,15 @@ use Doctrine\Persistence\ObjectRepository;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
+use function sys_get_temp_dir;
+
 final class SelectiveFixtureLoaderCommandTest extends TestCase
 {
     private function createEntityManager(): EntityManagerInterface
     {
-        $config     = ORMSetup::createAttributeMetadataConfiguration([__DIR__], true);
+        $config = ORMSetup::createAttributeMetadataConfig([__DIR__], true);
+        $config->setProxyDir(sys_get_temp_dir());
+        $config->setProxyNamespace('Proxies');
         $connection = DriverManager::getConnection([
             'driver' => 'pdo_sqlite',
             'memory' => true,
