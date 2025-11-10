@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Andez\SelectiveFixturesLoaderBundle\ArrayBaseFixturesLoader;
@@ -7,7 +9,7 @@ use Andez\SelectiveFixturesLoaderBundle\BaseFixturesLoaderInterface;
 use Andez\SelectiveFixturesLoaderBundle\Command\SelectiveFixtureLoaderCommand;
 use Andez\SelectiveFixturesLoaderBundle\FixturesDependencies;
 
-return static function (ContainerConfigurator $container) {
+return static function (ContainerConfigurator $container): void {
     $container->services()
         ->set('andez.selective_fixtures_loader_command', SelectiveFixtureLoaderCommand::class)
             ->args([
@@ -18,9 +20,9 @@ return static function (ContainerConfigurator $container) {
 
         ->set('andez.fixture_dependencies', FixturesDependencies::class)
             ->args([
-                service(BaseFixturesLoaderInterface::class)->nullOnInvalid(),
                 service('doctrine.fixtures.loader'),
-                param('andez_selective_fixtures_loader.purge_exclusion_tables')
+                service(BaseFixturesLoaderInterface::class)->nullOnInvalid(),
+                param('andez_selective_fixtures_loader.purge_exclusion_tables'),
             ])
             ->alias(FixturesDependencies::class, 'andez.fixture_dependencies')
 
@@ -28,7 +30,5 @@ return static function (ContainerConfigurator $container) {
             ->arg('$baseFixtures', [])
             ->autowire(false)
             ->autoconfigure(false)
-            ->private()
-    ;
-
+            ->private();
 };

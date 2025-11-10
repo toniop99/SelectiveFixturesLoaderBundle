@@ -6,6 +6,9 @@ parameters:
         - tests
     ignoreErrors:
         -
-            message: '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::children().#'
+            message: '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::children\(\).#'
             path: src/SelectiveFixturesLoaderBundle.php
             count: 1
+        -
+            message: '#Call to an undefined method Symfony\\Component\\DependencyInjection\\Extension\\ExtensionInterface::getConfiguration\(\).#'
+            path: tests

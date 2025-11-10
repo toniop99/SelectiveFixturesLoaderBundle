@@ -12,8 +12,8 @@ final readonly class FixturesDependencies
 {
     /** @param string[] $purgeExclusionTables */
     public function __construct(
-        private BaseFixturesLoaderInterface|null $baseFixturesLoader = null,
         private SymfonyFixturesLoader $fixturesLoader,
+        private BaseFixturesLoaderInterface|null $baseFixturesLoader = null,
         private array $purgeExclusionTables = [],
     ) {
     }
