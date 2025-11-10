@@ -169,7 +169,7 @@ final class SelectiveFixtureLoaderCommandTest extends TestCase
             TrackingUserFixture::class,
             TrackingProfileFixture::class,
         ], TrackingStore::$loaded);
-        self::assertStringContainsString('(dry-run)', $tester->getDisplay());
+        self::assertStringContainsString('(error dry-run)', $tester->getDisplay());
     }
 
     public function testExecuteAbortsOnNegativeConfirmation(): void
