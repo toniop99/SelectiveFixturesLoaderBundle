@@ -14,4 +14,3 @@ final class TrackingProductFixture implements FixtureInterface
         TrackingStore::$loaded[] = self::class;
     }
 }
-

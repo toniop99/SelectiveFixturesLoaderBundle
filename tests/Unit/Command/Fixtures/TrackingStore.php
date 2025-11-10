@@ -14,4 +14,3 @@ final class TrackingStore
         self::$loaded = [];
     }
 }
-

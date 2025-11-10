@@ -21,4 +21,3 @@ final class TrackingUserFixture implements FixtureInterface, DependentFixtureInt
         return [TrackingRoleFixture::class];
     }
 }
-

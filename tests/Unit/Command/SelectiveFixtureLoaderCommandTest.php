@@ -24,8 +24,6 @@ use Doctrine\Persistence\ObjectRepository;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
-use function array_values;
-
 final class SelectiveFixtureLoaderCommandTest extends TestCase
 {
     private function createEntityManager(): EntityManagerInterface
@@ -100,7 +98,7 @@ final class SelectiveFixtureLoaderCommandTest extends TestCase
                 return $this->em->getRepository($persistentObject);
             }
 
-            public function getManagerForClass(string $class): ObjectManager|null
+            public function getManagerForClass(string $class): ObjectManager
             {
                 return $this->em;
             }
@@ -150,7 +148,7 @@ final class SelectiveFixtureLoaderCommandTest extends TestCase
             TrackingRoleFixture::class,
             TrackingUserFixture::class,
             TrackingProfileFixture::class,
-        ], array_values(TrackingStore::$loaded));
+        ], TrackingStore::$loaded);
     }
 
     public function testExecuteDryRunDoesNotInvokeFixtureLoad(): void
@@ -169,7 +167,7 @@ final class SelectiveFixtureLoaderCommandTest extends TestCase
             TrackingRoleFixture::class,
             TrackingUserFixture::class,
             TrackingProfileFixture::class,
-        ], array_values(TrackingStore::$loaded));
+        ], TrackingStore::$loaded);
         self::assertStringContainsString('(dry-run)', $tester->getDisplay());
     }
 
@@ -205,7 +203,7 @@ final class SelectiveFixtureLoaderCommandTest extends TestCase
             TrackingRoleFixture::class,
             TrackingUserFixture::class,
             TrackingProfileFixture::class,
-        ], array_values(TrackingStore::$loaded));
+        ], TrackingStore::$loaded);
     }
 
     public function testInteractiveSelectionLoadsChosenFixtureAndDependencies(): void
@@ -223,7 +221,7 @@ final class SelectiveFixtureLoaderCommandTest extends TestCase
             TrackingRoleFixture::class,
             TrackingUserFixture::class,
             TrackingProfileFixture::class,
-        ], array_values(TrackingStore::$loaded));
+        ], TrackingStore::$loaded);
         self::assertStringContainsString('Select fixtures to load', $tester->getDisplay());
     }
 
@@ -242,6 +240,6 @@ final class SelectiveFixtureLoaderCommandTest extends TestCase
             TrackingRoleFixture::class,
             TrackingUserFixture::class,
             TrackingProfileFixture::class,
-        ], array_values(TrackingStore::$loaded));
+        ], TrackingStore::$loaded);
     }
 }
