@@ -97,9 +97,8 @@ jobs:
       - name: "Upload to Codecov"
         uses: "codecov/codecov-action@v5"
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           directory: reports
-        env:
-          CODECOV_TOKEN: "${{ secrets.CODECOV_TOKEN }}"
 
       - name: Upload junit.xml test results to Codecov
         if: ${{ !cancelled() }}
